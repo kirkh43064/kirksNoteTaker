@@ -1,7 +1,7 @@
 
 const util = require('util');
 const fs = require('fs');
-const uuid = require('uuid').v1;
+const { v4: uuidv4 } = require('uuid');
 
 const readFileAsync = util.promisify(fs.readFile);
 const writeFileAsync = util.promisify(fs.writeFile);
@@ -21,8 +21,8 @@ class Store {
   getNotes() {
     //get all notes
     return this.read()
-            .then(note => {
-                return JSON.parse(note) || [];
+            .then(notes => {
+                return JSON.parse(notes) || [];
             })
   }
 
@@ -33,10 +33,10 @@ class Store {
             throw new Error("title and text cannot be blank")
         }
 
-        const newNote = { title, text, id: uuid() }
+        const newNote = { title, text, id: uuidv4() }
 
         return this.getNotes()
-            .then(notes => [...note, newNote])
+            .then(notes => [...notes, newNote])
             .then(updatedNote => this.write(updatedNote))
             .then(() => this.newNote)
   }
@@ -44,7 +44,7 @@ class Store {
   removeNote(id) {
     return this.getNotes()
             .then(note => note.filter(note => note.id !== id))
-            .then(updatedNote => this.write(updatedNote))
+            .then(savedNote => this.write(savedNote))
   }
 
 }
