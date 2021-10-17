@@ -12,7 +12,7 @@ router.get('/notes', (req, res) => {
 });
 
 //POST notes to DB
-router.post('/notes', (rew, res) => {
+router.post('/notes', (req, res) => {
     store
         .addNote(req.body)
         .then((note) => res.json(note))
